@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#1c1b1a"/>
+  <!-- bico de pena, as duas metades da marca -->
+  <path d="M31 10 L31 46 L25 46 C22 42 16 35 17 29 C18 21 27 14 31 10 Z" fill="#f6f3ee"/>
+  <path d="M33 10 L33 46 L39 46 C42 42 48 35 47 29 C46 21 37 14 33 10 Z" fill="#a5a29d"/>
+  <!-- as três chapas -->
+  <g style="mix-blend-mode:multiply">
+    <circle cx="32" cy="28" r="6.2" fill="#00a3d9"/>
+    <circle cx="35.6" cy="34.4" r="6.2" fill="#e6007e"/>
+    <circle cx="28.4" cy="34.4" r="6.2" fill="#ffd400"/>
+  </g>
+  <rect x="24" y="50" width="7" height="4" rx="1.2" fill="#f6f3ee"/>
+  <rect x="33" y="50" width="7" height="4" rx="1.2" fill="#a5a29d"/>
+</svg>
