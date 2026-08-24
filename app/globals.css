@@ -246,3 +246,45 @@ body {
   .cintila::after { animation: none; }
   .holofote::before { display: none; }
 }
+
+/* =========================================================================
+   IMPRESSÃO
+   Serve a "Minha apresentação": o cliente salva a proposta em PDF pelo
+   próprio navegador. O cromo do painel (menu, cabeçalho, botões) sai pelo
+   `print:hidden` na Casca; aqui ficam os ajustes que só a folha precisa.
+   ========================================================================= */
+@media print {
+  /* fundo colorido é descartado por padrão na impressão, e sem ele o card
+     de encerramento (texto claro sobre tinta) sairia branco no branco */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  /* o scroll reveal deixa a seção em opacity:0 até entrar na viewport, e o
+     que não foi rolado na tela saía em branco no papel */
+  .revelar {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .sobe {
+    animation: none !important;
+  }
+
+  /* sombra vira borrão cinza na folha */
+  .shadow-cartao,
+  .shadow-papel,
+  .shadow-papel-alta {
+    box-shadow: none !important;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}

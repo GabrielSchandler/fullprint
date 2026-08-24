@@ -15,7 +15,7 @@ import { existsSync } from "node:fs";
 import puppeteer from "puppeteer-core";
 
 const CHROMES = ["C:/Program Files/Google/Chrome/Application/chrome.exe","C:/Program Files (x86)/Google/Chrome/Application/chrome.exe","C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe","C:/Program Files/Microsoft/Edge/Application/msedge.exe"];
-const ROTAS = ["/","/produtos","/produto/caderno-bauhaus","/colecao/geometria","/empresas","/checkout","/ajuda","/painel","/painel/pedidos","/painel/producao","/painel/produtos","/painel/estoque","/painel/financeiro","/painel/relatorios","/painel/cupons","/painel/clientes","/painel/b2b","/painel/promocoes","/painel/categorias","/painel/configuracoes"];
+const ROTAS = ["/","/produtos","/produto/caderno-bauhaus","/colecao/geometria","/empresas","/checkout","/ajuda","/painel","/painel/pedidos","/painel/producao","/painel/produtos","/painel/estoque","/painel/financeiro","/painel/relatorios","/painel/cupons","/painel/clientes","/painel/b2b","/painel/promocoes","/painel/categorias","/painel/apresentacao","/painel/configuracoes"];
 
 const nav = await puppeteer.launch({ executablePath: CHROMES.find(p=>existsSync(p)), headless: "new", protocolTimeout: 180000 });
 const pag = await nav.newPage();

@@ -45,6 +45,7 @@ const ROTAS_PADRAO = [
   "/painel/b2b",
   "/painel/promocoes",
   "/painel/categorias",
+  "/painel/apresentacao",
   "/painel/configuracoes",
 ];
 

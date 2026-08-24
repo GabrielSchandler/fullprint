@@ -20,6 +20,12 @@ const GRUPOS: { titulo: string; itens: Item[] }[] = [
     ],
   },
   {
+    titulo: "Proposta",
+    itens: [
+      { href: "/painel/apresentacao", rotulo: "Minha apresentação", icone: "nota" },
+    ],
+  },
+  {
     titulo: "Vendas",
     itens: [
       { href: "/painel/pedidos", rotulo: "Pedidos", icone: "sacola" },
@@ -69,6 +75,7 @@ const TITULOS: Record<string, string> = {
   "/painel/cupons": "Cupons",
   "/painel/promocoes": "Promoções",
   "/painel/financeiro": "Financeiro",
+  "/painel/apresentacao": "Minha apresentação",
   "/painel/configuracoes": "Configurações",
 };
 
@@ -204,7 +211,7 @@ export function Casca({ children }: { children: React.ReactNode }) {
   const navegacao = (
     <nav className="flex-1 overflow-y-auto px-3 py-5">
       {GRUPOS.map((g) => (
-        <div key={g.titulo} className="mb-5">
+        <div key={g.titulo} className="mb-4">
           <p className="spec px-3 pb-2 text-[0.5625rem] text-papel/35">{g.titulo}</p>
           <ul className="space-y-0.5">
             {g.itens.map((i) => {
@@ -214,7 +221,7 @@ export function Casca({ children }: { children: React.ReactNode }) {
                 <li key={i.href}>
                   <Link
                     href={i.href}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[0.8125rem] transition-colors ${
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[0.8125rem] transition-colors ${
                       ativo
                         ? "bg-white/10 font-medium text-papel"
                         : "text-papel/60 hover:bg-white/5 hover:text-papel/90"
@@ -242,7 +249,7 @@ export function Casca({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh bg-papel">
       {/* ------------------------------------------------------- sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[248px] flex-col bg-noite lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[248px] flex-col bg-noite lg:flex print:hidden">
         <div className="flex h-16 items-center border-b border-white/8 px-5">
           <Link href="/painel">
             <Logo variante="inline" fundo="escuro" />
@@ -298,8 +305,8 @@ export function Casca({ children }: { children: React.ReactNode }) {
       )}
 
       {/* ------------------------------------------------------ conteúdo */}
-      <div className="flex min-w-0 flex-1 flex-col lg:ml-[248px]">
-        <header className="sticky top-0 z-40 border-b border-linha bg-papel/92 backdrop-blur-md">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-[248px] print:ml-0">
+        <header className="sticky top-0 z-40 border-b border-linha bg-papel/92 backdrop-blur-md print:hidden">
           <div className="flex h-16 items-center gap-4 px-5 lg:px-8">
             <button
               onClick={() => setAberto(true)}
@@ -337,7 +344,7 @@ export function Casca({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 px-5 py-8 lg:px-8">{children}</main>
+        <main className="flex-1 px-5 py-8 lg:px-8 print:p-0">{children}</main>
       </div>
     </div>
   );
