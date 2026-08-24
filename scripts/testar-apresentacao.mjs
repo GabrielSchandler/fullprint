@@ -71,6 +71,29 @@ ok("mensalidade R$ 250", tem(t, "R$ 250"));
 ok("mensalidade R$ 400", tem(t, "R$ 400"));
 ok("selo Recomendado", tem(t, "Recomendado"));
 
+console.log("\n— escopo por pacote —");
+const cards = await pag.evaluate(() => {
+  const out = {};
+  for (const h of document.querySelectorAll("h3")) {
+    if (h.textContent.trim().startsWith("Pacote")) {
+      out[h.textContent.trim()] = h.closest("div").innerText.toLowerCase();
+    }
+  }
+  return out;
+});
+const noCard = (pacote, item) => (cards[pacote] ?? "").includes(item.toLowerCase());
+ok("os 3 cards foram lidos", Object.keys(cards).length === 3);
+ok(
+  "Intermediário NÃO lista Google Meu Negócio",
+  !noCard("Pacote Intermediário", "Google Meu Negócio"),
+);
+ok("Intermediário mantém os relatórios", noCard("Pacote Intermediário", "Relatórios gerenciais"));
+ok("Completo lista Site institucional", noCard("Pacote Completo", "Site institucional"));
+ok("Completo lista Google Meu Negócio", noCard("Pacote Completo", "Google Meu Negócio"));
+ok("Inicial não lista nenhum dos dois",
+  !noCard("Pacote Inicial", "Site institucional") &&
+  !noCard("Pacote Inicial", "Google Meu Negócio"));
+
 /* O requisito proíbe dado fictício de venda/cliente nesta página. Procurar por
    palavra dava falso positivo — "Ticket médio" aparece como NOME de um recurso
    do Pacote Intermediário, não como número inventado. A checagem que vale é na
@@ -91,7 +114,7 @@ const comparativo = await pag.evaluate(() => {
   const linhas = [...document.querySelectorAll("table tbody tr")];
   return linhas.map((tr) => [...tr.children].map((td) => td.textContent.trim()));
 });
-ok("tabela tem 8 linhas", comparativo.length === 8);
+ok("tabela tem 9 linhas", comparativo.length === 9);
 ok("4 colunas por linha", comparativo.every((l) => l.length === 4));
 ok(
   "linha de implantação com os 3 valores",
@@ -103,6 +126,15 @@ ok(
   "traço nas células vazias",
   comparativo.some((l) => l.includes("—")),
 );
+
+/* célula com check é um SVG, então textContent vem vazio; traço é texto */
+const linhaDe = (nome) => comparativo.find((l) => l[0] === nome);
+const soNoCompleto = (nome) => {
+  const l = linhaDe(nome);
+  return !!l && l[1] === "—" && l[2] === "—" && l[3] === "";
+};
+ok("Site institucional só no Completo", soNoCompleto("Site institucional"));
+ok("Google Meu Negócio só no Completo", soNoCompleto("Google Meu Negócio"));
 
 console.log("\n— modal de seleção —");
 await pag.evaluate(() => {
