@@ -14,6 +14,7 @@ import {
   Vazio,
 } from "@/components/painel/ui";
 import { Icone } from "@/components/ui/Icone";
+import { STATUS_ARTE, jobDoPedido } from "@/lib/producao";
 import { brl, brlCurto, dataHora, num } from "@/lib/format";
 import { FotoProduto } from "@/components/loja/FotoProduto";
 import {
@@ -388,6 +389,7 @@ export default function PedidosPage() {
                 { rotulo: "Canal", chave: "canal" },
                 { rotulo: "Pagamento", chave: "pagamento" },
                 { rotulo: "Status", chave: "status" },
+                { rotulo: "Arte" },
                 { rotulo: "Total", alinhar: "dir", chave: "total" },
                 { rotulo: "", alinhar: "dir" },
               ]}
@@ -413,6 +415,19 @@ export default function PedidosPage() {
                     <SeloStatus tom={STATUS_PEDIDO[p.status].tom}>
                       {STATUS_PEDIDO[p.status].rotulo}
                     </SeloStatus>
+                  </Celula>
+                  <Celula>
+                    {/* só pedido na esteira tem OS aberta; entregue e cancelado
+                        não mostram arte nenhuma, e o traço diz isso */}
+                    {(() => {
+                      const j = jobDoPedido(p.id);
+                      if (!j) return <span className="text-mute-2">—</span>;
+                      return (
+                        <SeloStatus tom={STATUS_ARTE[j.arte].tom}>
+                          {STATUS_ARTE[j.arte].curto}
+                        </SeloStatus>
+                      );
+                    })()}
                   </Celula>
                   <Celula alinhar="dir" className="font-medium tabular">
                     {brl(p.total)}

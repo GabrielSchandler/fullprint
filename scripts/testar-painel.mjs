@@ -143,8 +143,14 @@ const clicouCol = await pag.evaluate(() => {
 });
 await espera(600);
 const depois = await pag.evaluate(() => {
-  const cels = [...document.querySelectorAll("tbody tr")].slice(0, 3).map((tr) => tr.children[6]?.textContent?.trim());
-  return cels;
+  /* acha a coluna pelo cabeçalho em vez de fixar o índice — quando a coluna
+     Arte entrou antes de Total, o índice fixo passou a ler a coluna errada e
+     o teste relatava "—" em vez dos valores */
+  const cabs = [...document.querySelectorAll("thead th")];
+  const i = cabs.findIndex((th) => th.textContent?.includes("Total"));
+  return [...document.querySelectorAll("tbody tr")]
+    .slice(0, 3)
+    .map((tr) => tr.children[i]?.textContent?.trim());
 });
 console.log("ordenar por Total:", clicouCol, "| 1a linha antes:", antes, "| totais depois:", depois);
 

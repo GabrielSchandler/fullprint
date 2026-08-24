@@ -7,6 +7,7 @@ import { BuscaGlobal } from "@/components/painel/BuscaGlobal";
 import { Logo } from "@/components/marca/Logo";
 import { Icone, type NomeIcone } from "@/components/ui/Icone";
 import { estoqueCritico, PEDIDOS } from "@/lib/painel-dados";
+import { arteTravada, atrasados } from "@/lib/producao";
 
 type Item = { href: string; rotulo: string; icone: NomeIcone | string; sino?: number };
 
@@ -25,6 +26,10 @@ const GRUPOS: { titulo: string; itens: Item[] }[] = [
       { href: "/painel/clientes", rotulo: "Clientes", icone: "pessoas" },
       { href: "/painel/b2b", rotulo: "Orçamentos B2B", icone: "predio" },
     ],
+  },
+  {
+    titulo: "Produção",
+    itens: [{ href: "/painel/producao", rotulo: "Esteira", icone: "raio" }],
   },
   {
     titulo: "Catálogo",
@@ -57,6 +62,7 @@ const TITULOS: Record<string, string> = {
   "/painel/pedidos": "Pedidos",
   "/painel/clientes": "Clientes",
   "/painel/b2b": "Orçamentos B2B",
+  "/painel/producao": "Produção",
   "/painel/produtos": "Produtos",
   "/painel/categorias": "Categorias e coleções",
   "/painel/estoque": "Estoque",
@@ -70,7 +76,34 @@ function Notificacoes({ fechar }: { fechar: () => void }) {
   const criticos = estoqueCritico();
   const novos = PEDIDOS.filter((p) => p.status === "novo");
 
+  const emAtraso = atrasados();
+  const travadas = arteTravada();
+
+  /* aviso de contagem zero é ruído — "0 OS passaram do prazo" ocupa a mesma
+     linha de um alerta de verdade e treina quem usa a ignorar o sino */
   const avisos = [
+    ...(emAtraso.length
+      ? [
+          {
+            icone: "relogio",
+            tom: "text-erro",
+            titulo: `${emAtraso.length} ${emAtraso.length === 1 ? "OS passou" : "OS passaram"} do prazo`,
+            texto: `A mais antiga é a ${emAtraso[0].os}, de ${emAtraso[0].pedido.cliente}.`,
+            href: "/painel/producao",
+          },
+        ]
+      : []),
+    ...(travadas.length
+      ? [
+          {
+            icone: "papel",
+            tom: "text-alerta",
+            titulo: `${travadas.length} ${travadas.length === 1 ? "OS presa" : "OS presas"} na conferência de arte`,
+            texto: "A máquina não roda sem o arquivo liberado — o atendimento resolve.",
+            href: "/painel/producao",
+          },
+        ]
+      : []),
     {
       icone: "sacola",
       tom: "text-info",
@@ -148,8 +181,25 @@ export function Casca({ children }: { children: React.ReactNode }) {
   const pendentes = PEDIDOS.filter((p) => p.status === "novo").length;
   const criticos = estoqueCritico().length;
 
+  const emAtraso = atrasados().length;
+
   const contador = (href: string) =>
-    href === "/painel/pedidos" ? pendentes : href === "/painel/estoque" ? criticos : 0;
+    href === "/painel/pedidos"
+      ? pendentes
+      : href === "/painel/estoque"
+        ? criticos
+        : href === "/painel/producao"
+          ? emAtraso
+          : 0;
+
+  /* atraso de produção é o único vermelho da barra — prazo estourado não
+     divide atenção com aviso de reposição */
+  const tomDoContador = (href: string) =>
+    href === "/painel/producao"
+      ? "bg-erro text-white"
+      : href === "/painel/estoque"
+        ? "bg-alerta text-white"
+        : "bg-magenta text-white";
 
   const navegacao = (
     <nav className="flex-1 overflow-y-auto px-3 py-5">
@@ -174,11 +224,7 @@ export function Casca({ children }: { children: React.ReactNode }) {
                     <span className="flex-1 truncate">{i.rotulo}</span>
                     {n > 0 && (
                       <span
-                        className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[0.625rem] font-semibold tabular ${
-                          i.href === "/painel/estoque"
-                            ? "bg-alerta text-white"
-                            : "bg-magenta text-white"
-                        }`}
+                        className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[0.625rem] font-semibold tabular ${tomDoContador(i.href)}`}
                       >
                         {n}
                       </span>

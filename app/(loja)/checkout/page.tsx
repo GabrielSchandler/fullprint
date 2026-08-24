@@ -8,8 +8,9 @@ import { Botao, BotaoLink, Nota, Selo } from "@/components/ui/primitivos";
 import { CUPONS, useCarrinho } from "@/lib/carrinho";
 import { brl } from "@/lib/format";
 import { FotoProduto } from "@/components/loja/FotoProduto";
+import { EnvioDeArte, type Arquivo } from "@/components/loja/EnvioDeArte";
 
-const PASSOS = ["Identificação", "Entrega", "Pagamento"] as const;
+const PASSOS = ["Identificação", "Arte", "Entrega", "Pagamento"] as const;
 
 const ENTREGAS = [
   { id: "pac", nome: "PAC · Correios", prazo: "6 a 9 dias úteis", valor: 24.9 },
@@ -61,6 +62,9 @@ export default function CheckoutPage() {
   const [codigo, setCodigo] = useState("");
   const [aviso, setAviso] = useState<{ ok: boolean; msg: string } | null>(null);
   const [feito, setFeito] = useState(false);
+  /* sobe aqui para sobreviver à troca de passo — ver EnvioDeArte */
+  const [artes, setArtes] = useState<Arquivo[]>([]);
+  const [criacaoDeArte, setCriacaoDeArte] = useState(false);
 
   const opcaoEntrega = ENTREGAS.find((e) => e.id === entrega)!;
   const freteEscolhido = subtotal >= 199 && entrega !== "sedex" ? 0 : opcaoEntrega.valor;
@@ -167,6 +171,15 @@ export default function CheckoutPage() {
             )}
 
             {passo === 1 && (
+              <EnvioDeArte
+                arquivos={artes}
+                setArquivos={setArtes}
+                criacao={criacaoDeArte}
+                setCriacao={setCriacaoDeArte}
+              />
+            )}
+
+            {passo === 2 && (
               <div className="sobe">
                 <h2 className="font-display text-2xl">Onde entregar</h2>
                 <div className="mt-6 grid grid-cols-12 gap-4">
@@ -213,7 +226,7 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {passo === 2 && (
+            {passo === 3 && (
               <div className="sobe">
                 <h2 className="font-display text-2xl">Como pagar</h2>
                 <div className="mt-6 space-y-2.5">
@@ -279,9 +292,9 @@ export default function CheckoutPage() {
               <Botao
                 tom="tinta"
                 tamanho="lg"
-                onClick={() => (passo === 2 ? setFeito(true) : setPasso((v) => v + 1))}
+                onClick={() => (passo === 3 ? setFeito(true) : setPasso((v) => v + 1))}
               >
-                {passo === 2 ? "Finalizar pedido" : "Continuar"}
+                {passo === 3 ? "Finalizar pedido" : "Continuar"}
                 <Icone nome="seta" className="size-4" />
               </Botao>
             </div>

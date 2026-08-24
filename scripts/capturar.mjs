@@ -35,6 +35,7 @@ const ROTAS_PADRAO = [
   "/checkout",
   "/painel",
   "/painel/pedidos",
+  "/painel/producao",
   "/painel/produtos",
   "/painel/estoque",
   "/painel/financeiro",

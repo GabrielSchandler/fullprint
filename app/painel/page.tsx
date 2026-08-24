@@ -34,6 +34,13 @@ import {
   vendasPorCanal,
 } from "@/lib/painel-dados";
 import { BotaoExportar } from "@/components/painel/BotaoExportar";
+import {
+  ETAPAS_PRODUCAO,
+  arteTravada,
+  atrasados,
+  jobsDaEtapa,
+  ocupacaoGeral,
+} from "@/lib/producao";
 
 const variacao = (atual: number, anterior: number) =>
   Math.round(((atual - anterior) / anterior) * 1000) / 10;
@@ -115,6 +122,62 @@ export default function DashboardPage() {
           serie={FINANCEIRO.map((m) => (m.lucro / m.receita) * 100)}
           corSerie="var(--color-serie-5)"
         />
+      </div>
+
+      {/* ---------------------------------------------- esteira de produção */}
+      <div className="mt-5">
+        <Cartao
+          titulo="Esteira de produção"
+          descricao="Onde estão as ordens de serviço abertas agora."
+          acao={
+            <Link
+              href="/painel/producao"
+              className="inline-flex items-center gap-1.5 text-[0.8125rem] font-medium hover:text-magenta-forte"
+            >
+              Abrir o quadro
+              <Icone nome="seta" className="size-3.5" />
+            </Link>
+          }
+        >
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {ETAPAS_PRODUCAO.map((e) => {
+              const lista = jobsDaEtapa(e.id);
+              const horas = lista.reduce((s, j) => s + j.horas, 0);
+              return (
+                <div key={e.id} className="rounded-lg border border-linha bg-papel/50 p-4">
+                  <div className="flex items-center gap-2 text-mute">
+                    <Icone nome={e.icone} className="size-4" />
+                    <p className="spec">{e.rotulo}</p>
+                  </div>
+                  <p className="mt-2.5 text-[1.5rem] leading-none font-semibold tabular">
+                    {num(lista.length)}
+                  </p>
+                  <p className="mt-1.5 text-[0.6875rem] text-mute-2 tabular">
+                    {num(horas, 1)} h de máquina na fila
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-linha pt-4">
+            <p className="flex items-center gap-2 text-[0.8125rem]">
+              <span className="size-1.5 rounded-full bg-erro" />
+              <strong className="font-semibold tabular">{atrasados().length}</strong>
+              <span className="text-mute">atrasadas</span>
+            </p>
+            <p className="flex items-center gap-2 text-[0.8125rem]">
+              <span className="size-1.5 rounded-full bg-alerta" />
+              <strong className="font-semibold tabular">{arteTravada().length}</strong>
+              <span className="text-mute">esperando arte do cliente</span>
+            </p>
+            <p className="flex items-center gap-2 text-[0.8125rem]">
+              <span className="size-1.5 rounded-full bg-serie-1" />
+              <strong className="font-semibold tabular">{ocupacaoGeral()}%</strong>
+              <span className="text-mute">da capacidade do parque</span>
+            </p>
+          </div>
+        </Cartao>
       </div>
 
       {/* ------------------------------------------------ receita e canal */}
