@@ -5,6 +5,11 @@ Front-end prototype of the online store and admin panel for Full Print, a print 
 
 [🇧🇷 Português](#-português) · [🇺🇸 English](#-english)
 
+<p align="center">
+  <img src="docs/screenshot-desktop.jpg" alt="Página inicial / Home page — desktop" width="76%">
+  <img src="docs/screenshot-mobile.jpg" alt="Página inicial / Home page — mobile" width="20%">
+</p>
+
 ---
 
 ## 🇧🇷 Português
